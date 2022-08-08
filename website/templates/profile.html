@@ -1,0 +1,55 @@
+{% extends "base.html" %} {% block title %}Profile Page{% endblock %} {% block content %} 
+
+
+
+<div class="container rounded bg-white mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-3 border-right">
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" src="filler" onerror="Unlucky">
+                <span class="font-weight-bold">{{ user.username }}</span>
+                <span class="text-black-50">{{ user.email }}</span><span> </span></div>
+        </div>
+        <div class="col-md-5 border-right">
+            <div class="p-3 py-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="text-right">Profile Settings</h4>
+                </div>
+                <form method="POST">
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <label for="name" class="labels">Name</label>
+                            <input type="text" class="form-control" placeholder="first name"  id="name" name="name" value={{ user.name }}>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="surname" class="labels">Surname</label>
+                            <input type="text" class="form-control" id="surname" name="surname" value="{{ user.surname }}" placeholder="surname">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <label class="labels">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="enter email id" value={{ user.email }}>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="labels">Job</label>
+                            <input type="text" class="form-control" id="education" name="education" placeholder="education" value={{ user.job }}>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <label class="labels">Country</label>
+                            <input type="text" class="form-control" placeholder="country" id="country" name="country" value={{ user.country }}>
+                        </div>
+                    </div>
+                    <div class="mt-5 text-center">
+                        <button class="btn btn-primary profile-button" type="submit">Save Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+{% endblock %}

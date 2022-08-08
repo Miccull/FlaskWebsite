@@ -1,3 +1,5 @@
+import email
+from multiprocessing.dummy import JoinableQueue
 from flask import Blueprint, flash, render_template, request, redirect, url_for
 from .models import User
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -37,7 +39,7 @@ def logout():
 def sign_up():
     if request.method == 'POST':
         email = request.form.get('email')
-        first_name = request.form.get('firstName')
+        username = request.form.get('username')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
 
@@ -46,14 +48,14 @@ def sign_up():
             flash('Email already exists.', category='error')
         elif len(email) < 4:
             flash('Email must be greater than 4 characters.', category='error')
-        elif len(first_name) < 2:
-            flash('First name must be greater than 2 characters.', category='error')
+        elif len(username) < 2:
+            flash('Username must be greater than 7 characters', category='error')
         elif password1 != password2:
             flash('Passwords don\'t match.', category='error')
         elif len(password1) < 7:
             flash('Password must be at elast 7 characters', category='error')
         else:
-            new_user = User(email=email, first_name=first_name, password=generate_password_hash(
+            new_user = User(email=email, username=username, password=generate_password_hash(
                 password1, method='sha512'))
             db.session.add(new_user)
             db.session.commit()
@@ -61,3 +63,35 @@ def sign_up():
             flash('Account created', category='success')
             return redirect(url_for('views.home'))
     return render_template("sign_up.html", user=current_user)
+
+
+@auth.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        surname = request.form.get('surname')
+        email = request.form.get('email')
+        job = request.form.get('job')
+        country = request.form.get('country')
+        user = current_user
+        if current_user.email == email:
+            user.name = name
+            user.surname = surname
+            user.job = job
+            user.country = country
+            flash('Updated profile successfully!', category='success')
+            return render_template("profile.html", user=current_user)
+        else:
+            if User.query.filter_by(email=email).first():
+                flash('Email already used for another account!', category='error')
+                return render_template("profile.html", user=current_user)
+            else:
+                user.name = name
+                user.surname = surname
+                user.email = email
+                user.job = job
+                user.country = country
+                flash('Updated profile successfully!', category='success')
+                return render_template("profile.html", user=current_user)
+    return render_template("profile.html", user=current_user)

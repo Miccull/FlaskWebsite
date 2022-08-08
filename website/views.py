@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from .models import Note
 from . import db
 import json
+from werkzeug.utils import secure_filename
 
 views = Blueprint('views', __name__)
 
@@ -34,3 +35,13 @@ def delete_note():
             db.session.commit()
 
     return jsonify({})
+
+
+@views.route('/uploaded', methods=['POST'])
+@login_required
+def uploaded():
+    if request.method == 'POST':
+        file = request.files['file']
+        file.save(secure_filename(file.filename))
+        flash('File uploaded successfully!')
+    return render_template("profile.html", user=current_user)
